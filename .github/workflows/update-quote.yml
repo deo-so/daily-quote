@@ -1,0 +1,29 @@
+name: Update Daily Quote
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-quote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Fetch quote and generate files
+        env:
+          NOTION_TOKEN: $__ secrets.NOTION_TOKEN __$
+          NOTION_DATABASE_ID: $__ secrets.NOTION_DATABASE_ID __$
+        run: node update-quote.js
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html current-quote.json history.json
+          git diff --cached --quiet || (git commit -m "Update daily quote for $(date +%Y-%m-%d)" && git push)
