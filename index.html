@@ -2,7 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <style>body { font-family: 'Open Sans', sans-serif; padding: 32px; color: #999; }</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Quote</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      padding: 32px;
+      background: transparent;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .quote {
+      font-size: 1.5em; font-weight: 700;
+      line-height: 1.6; color: #1a1a1a;
+    }
+    .credits {
+      margin-top: 16px; font-size: 0.9em;
+      color: #555; line-height: 1.5;
+    }
+    .credits strong { color: #333; }
+    .credits a { color: #555; text-decoration: underline; }
+    .credits a:hover { color: #111; }
+    .remarks {
+      margin-top: 8px; font-size: 0.85em;
+      color: #444; line-height: 1.4;
+    }
+  </style>
 </head>
-<body><p>Daily quote will appear here once the automation runs.</p></body>
+<body>
+  <div class="quote">“Give us the courage and fortitude to do what is in our power to do. May we work toward the greater good, being always mindful of how our actions, or inaction, affect others.”</div>
+  <div class="credits"><strong>—Rev. Randy Lewis</strong>&nbsp;&nbsp;|&nbsp;&nbsp;<em><a href="https://blog.revrandylewis.com/prayer-at-the-vigil-for-victims-of-gun-violence" target="_blank">|  </a></em></div>
+</body>
 </html>
