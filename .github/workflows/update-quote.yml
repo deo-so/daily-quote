@@ -20,8 +20,8 @@ jobs:
 
       - name: Fetch quote and generate files
         env:
-          NOTION_TOKEN: $__ secrets.NOTION_TOKEN __$
-          NOTION_DATABASE_ID: $__ secrets.NOTION_DATABASE_ID __$
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: node update-quote.js
 
       - name: Commit and push if changed
