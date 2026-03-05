@@ -98,7 +98,7 @@ async function main() {
   // Combine: bold author  |  italic linked text
   let creditsHtml = '';
   if (linkHtml) {
-    creditsHtml = authorHtml + '&nbsp;&nbsp;|&nbsp;&nbsp;' + linkHtml;
+    creditsHtml = authorHtml + '  |  ' + linkHtml;
   } else {
     creditsHtml = authorHtml;
   }
@@ -108,6 +108,34 @@ async function main() {
   if (publishedRemarks) {
     remarksHtml = '  <div class="remarks">' + esc(publishedRemarks) + '</div>\n';
   }
+
+  // ---- GENERATE RSS FEED ----
+  const SITE_URL = 'https://deo-so.github.io/daily-quote/';
+  const feedItems = history.slice(0, 50).map(function(item) {
+    const itemAuthor = item.author ? item.author : 'Unknown';
+    return '    <item>\n'
+      + '      <title>' + escXml(item.quote) + '</title>\n'
+      + '      <description>' + escXml('\u2014' + itemAuthor) + '</description>\n'
+      + '      <pubDate>' + new Date(item.updatedAt).toUTCString() + '</pubDate>\n'
+      + '      <guid>' + SITE_URL + '#' + item.date + '</guid>\n'
+      + '      <link>' + SITE_URL + '</link>\n'
+      + '    </item>';
+  }).join('\n');
+
+  const feed = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    + '<rss version="2.0">\n'
+    + '  <channel>\n'
+    + '    <title>Daily Quote \u2014 Rev. Randy Lewis</title>\n'
+    + '    <link>' + SITE_URL + '</link>\n'
+    + '    <description>A daily quote from the writings and sermons of Rev. Randy Lewis</description>\n'
+    + '    <language>en-us</language>\n'
+    + '    <lastBuildDate>' + new Date().toUTCString() + '</lastBuildDate>\n'
+    + feedItems + '\n'
+    + '  </channel>\n'
+    + '</rss>';
+
+  fs.writeFileSync('feed.xml', feed);
+  console.log('Generated feed.xml (' + history.slice(0, 50).length + ' items)');
 
   // ---- GENERATE HTML ----
   const html = '<!DOCTYPE html>\n'
@@ -164,6 +192,15 @@ function esc(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function escXml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
 main().catch(err => {
