@@ -116,12 +116,14 @@ async function main() {
   const SITE_URL = 'https://deo-so.github.io/daily-quote/';
   const feedItems = history.slice(0, 50).map(function(item) {
     const itemAuthor = item.author ? item.author : 'Unknown';
+    var imgDate = item.date ? item.date.substring(0, 10) : '';
     return '    <item>\n'
       + '      <title>' + escXml(item.quote) + '</title>\n'
       + '      <description>' + escXml('\u2014' + itemAuthor) + '</description>\n'
       + '      <pubDate>' + new Date(item.updatedAt).toUTCString() + '</pubDate>\n'
       + '      <guid>' + SITE_URL + '#' + item.date + '</guid>\n'
       + '      <link>' + SITE_URL + '</link>\n'
+      + (imgDate ? '      <enclosure url="' + SITE_URL + 'screenshots/' + imgDate + '-rl-quote.jpg" type="image/jpeg" />\n' : '')
       + '    </item>';
   }).join('\n');
 
