@@ -15,14 +15,17 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Install Puppeteer
+        run: npm install puppeteer
+
       - name: Fetch quote and generate files
         env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          NOTION_TOKEN: $__ secrets.NOTION_TOKEN __$
+          NOTION_DATABASE_ID: $__ secrets.NOTION_DATABASE_ID __$
         run: node update-quote.js
 
       - name: Commit and push if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          file_pattern: 'index.html current-quote.json history.json feed.xml'
+          file_pattern: 'index.html current-quote.json history.json feed.xml screenshots/*'
           commit_message: 'Update daily quote'
