@@ -40,10 +40,10 @@ async function main() {
   const props = data.results[0].properties;
   const quote = props['Quote']?.title?.[0]?.plain_text || '';
   const author = props['Author']?.select?.name || '';
-  const linkName = props['Link Name']?.rich_text?.[0]?.plain_text || '';
+  const linkName = (props['Link Name']?.rich_text || []).map(function(t) { return t.plain_text; }).join('') || '';
   const linkUrl = props['Link URL']?.url || '';
-  const publishedRemarks = props['Published Remarks']?.rich_text?.[0]?.plain_text || '';
-  const socialPost = props['Social Post']?.rich_text?.[0]?.plain_text || '';
+  const publishedRemarks = (props['Published Remarks']?.rich_text || []).map(function(t) { return t.plain_text; }).join('') || '';
+  const socialPost = (props['Social Post']?.rich_text || []).map(function(t) { return t.plain_text; }).join('') || '';
   const notionDate = props['Date']?.date?.start || '';
 
   if (!quote) {
@@ -118,7 +118,7 @@ async function main() {
 
   // ---- GENERATE RSS FEED ----
   const SITE_URL = 'https://deo-so.github.io/daily-quote/';
-  const feedItems = history.slice(0, 50).map(function(item) {
+  const feedItems = history.slice(0, 365).map(function(item) {
     const itemAuthor = item.author ? item.author : 'Unknown';
     var imgDate = item.date ? item.date.substring(0, 10) : '';
     var rssBody = item.socialPost ? item.socialPost : ('\u2014' + itemAuthor);
@@ -145,7 +145,7 @@ async function main() {
     + '</rss>';
 
   fs.writeFileSync('feed.xml', feed);
-  console.log('Generated feed.xml (' + history.slice(0, 50).length + ' items)');
+  console.log('Generated feed.xml (' + history.slice(0, 365).length + ' items)');
 
   // ---- GENERATE HTML ----
   const html = '<!DOCTYPE html>\n'
