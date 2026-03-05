@@ -55,6 +55,16 @@ async function main() {
   // Extract date portion for filenames (YYYY-MM-DD)
   const dateStr = notionDate ? notionDate.substring(0, 10) : now.substring(0, 10);
 
+  // ---- DEDUP CHECK: skip if same quote already published today ----
+  try {
+    const existing = JSON.parse(fs.readFileSync('current-quote.json', 'utf8'));
+    if (existing.quote === quote && existing.notionDate === notionDate) {
+      console.log('Same quote already published for this date. Skipping.');
+      return;
+    }
+  } catch (e) {
+    // File missing or invalid — proceed normally
+  }
   // ---- SAVE current-quote.json ----
   const currentData = {
     quote,
