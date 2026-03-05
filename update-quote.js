@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const DATABASE_ID = process.env.NOTION_DATABASE_ID;
@@ -50,6 +51,8 @@ async function main() {
   }
 
   const now = new Date().toISOString();
+  // Extract date portion for filenames (YYYY-MM-DD)
+  const dateStr = notionDate ? notionDate.substring(0, 10) : now.substring(0, 10);
 
   // ---- SAVE current-quote.json ----
   const currentData = {
@@ -184,6 +187,40 @@ async function main() {
   fs.writeFileSync('index.html', html);
   console.log('Generated index.html');
   console.log('Quote: "' + quote.substring(0, 60) + '..."');
+
+  // ---- TAKE SCREENSHOT ----
+  try {
+    const puppeteer = require('puppeteer');
+    const screenshotsDir = path.join(__dirname, 'screenshots');
+    if (!fs.existsSync(screenshotsDir)) {
+      fs.mkdirSync(screenshotsDir);
+    }
+
+    const browser = await puppeteer.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    const page = await browser.newPage();
+    await page.setViewport({ width: 600, height: 600 });
+
+    // Load the generated HTML file
+    const filePath = 'file://' + path.resolve(__dirname, 'index.html');
+    await page.goto(filePath, { waitUntil: 'networkidle0', timeout: 30000 });
+
+    // Set white background for the screenshot (page has transparent bg)
+    await page.evaluate(function() {
+      document.body.style.background = '#ffffff';
+    });
+
+    const filename = dateStr + '-rl-quote.jpg';
+    const outputPath = path.join(screenshotsDir, filename);
+    await page.screenshot({ path: outputPath, type: 'jpeg', quality: 90 });
+    await browser.close();
+
+    console.log('Screenshot saved: screenshots/' + filename);
+  } catch (err) {
+    console.error('Screenshot failed (non-fatal):', err.message);
+  }
 }
 
 function esc(str) {
