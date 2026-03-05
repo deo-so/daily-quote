@@ -43,6 +43,7 @@ async function main() {
   const linkName = props['Link Name']?.rich_text?.[0]?.plain_text || '';
   const linkUrl = props['Link URL']?.url || '';
   const publishedRemarks = props['Published Remarks']?.rich_text?.[0]?.plain_text || '';
+  const socialPost = props['Social Post']?.rich_text?.[0]?.plain_text || '';
   const notionDate = props['Date']?.date?.start || '';
 
   if (!quote) {
@@ -61,6 +62,7 @@ async function main() {
     linkName,
     linkUrl,
     publishedRemarks,
+    socialPost,
     notionDate,
     updatedAt: now
   };
@@ -70,14 +72,16 @@ async function main() {
   // ---- APPEND TO history.json ----
   let history = [];
   try {
-    history = JSON.parse(fs.readFileSync('history.json', 'utf8'));
+    const parsed = JSON.parse(fs.readFileSync('history.json', 'utf8'));
+    if (Array.isArray(parsed)) history = parsed;
   } catch (e) {
-    // File doesn't exist yet — start fresh
+    // File doesn't exist or is invalid — start fresh
   }
   history.unshift({
     date: notionDate,
     quote,
     author,
+    socialPost,
     updatedAt: now
   });
   fs.writeFileSync('history.json', JSON.stringify(history, null, 2));
@@ -117,9 +121,10 @@ async function main() {
   const feedItems = history.slice(0, 50).map(function(item) {
     const itemAuthor = item.author ? item.author : 'Unknown';
     var imgDate = item.date ? item.date.substring(0, 10) : '';
+    var rssBody = item.socialPost ? item.socialPost : ('\u2014' + itemAuthor);
     return '    <item>\n'
       + '      <title>' + escXml(item.quote) + '</title>\n'
-      + '      <description>' + escXml('\u2014' + itemAuthor) + '</description>\n'
+      + '      <description>' + escXml(rssBody) + '</description>\n'
       + '      <pubDate>' + new Date(item.updatedAt).toUTCString() + '</pubDate>\n'
       + '      <guid>' + SITE_URL + '#' + item.date + '</guid>\n'
       + '      <link>' + SITE_URL + '</link>\n'
