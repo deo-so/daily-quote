@@ -41,9 +41,9 @@ async function main() {
   const quote = props['Quote']?.title?.[0]?.plain_text || '';
   const author = props['Author']?.select?.name || '';
   const linkName = (props['Link Name']?.rich_text || []).map(function(t) { return t.plain_text; }).join('') || '';
-  const linkUrl = props['Link URL']?.url || '';
+  const linkUrl = props['Link URL']?.formula?.string || '';
   const publishedRemarks = (props['Published Remarks']?.rich_text || []).map(function(t) { return t.plain_text; }).join('') || '';
-  const socialPost = (props['Social Post']?.rich_text || []).map(function(t) { return t.plain_text; }).join('') || '';
+  const socialPost = props['Social Post']?.formula?.string || '';
   const notionDate = props['Date']?.date?.start || '';
 
   if (!quote) {
