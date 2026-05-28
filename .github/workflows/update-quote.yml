@@ -29,4 +29,5 @@ jobs:
         with:
           file_pattern: 'index.html current-quote.json history.json feed.xml screenshots/*'
           commit_message: 'Update daily quote'
-          token: ${{ secrets.PAT }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
