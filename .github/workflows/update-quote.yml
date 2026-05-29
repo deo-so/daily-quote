@@ -22,7 +22,7 @@ jobs:
         run: node update-quote.js
 
       - name: Commit and push if changed
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           file_pattern: 'index.html current-quote.json history.json feed.xml screenshots/*'
           commit_message: 'Update daily quote'
