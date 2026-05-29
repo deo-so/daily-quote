@@ -1,10 +1,8 @@
 name: Update Daily Quote
-
 on:
   schedule:
-    - cron: '0 12 * * *'
+    - cron: '0 12 * * *' # Runs at 12:00
   workflow_dispatch:
-
 jobs:
   update-quote:
     runs-on: ubuntu-latest
@@ -29,5 +27,4 @@ jobs:
         with:
           file_pattern: 'index.html current-quote.json history.json feed.xml screenshots/*'
           commit_message: 'Update daily quote'
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          token: ${{ secrets.PAT }}
