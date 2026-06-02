@@ -1,7 +1,7 @@
 name: Update Daily Quote
 on:
   schedule:
-    - cron: '0 12 * * *' # Runs at 12:00
+    - cron: '38 11 * * *' # Runs at 12:00
   workflow_dispatch:
 jobs:
   update-quote:
